@@ -1,0 +1,7 @@
+(define (mid a b c)
+  (min 
+    (max a b) 
+    (max b c)
+  )
+)
+
