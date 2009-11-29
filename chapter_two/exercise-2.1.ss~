@@ -1,7 +1,0 @@
-(define (make-rat n d)
-  (define (internal-make n d)
-    (let ((g (gcd n d)))
-      (cons (/ n g) (/ d g))))
-  (if (< d 0)
-      (internal-make (- n) (- d))
-      (internal-make n d)))
