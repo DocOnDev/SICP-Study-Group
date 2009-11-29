@@ -1,5 +1,6 @@
 ; Exercise 1.15
 
+; Cube Function from book
 (define (cube x) (* x x x))
 (define (p x) (- (* 3 x) (* 4 (cube x))))
 (define (sine angle)
@@ -8,6 +9,7 @@
        (p (sine (/ angle 3.0)))))
 
 
+; Expansion
 (sine 12.15)
 (p (sine (/ 12.15 3.0)))
 (p (sine 4.05))
@@ -20,3 +22,5 @@
 (p (p (p (p (p (sine (/ 0.15 3.0)))))))
 (p (p (p (p (p (sine 0.05))))))
 
+; Answer to A - 5
+; Answer to B - ???

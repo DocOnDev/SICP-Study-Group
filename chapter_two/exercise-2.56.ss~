@@ -1,0 +1,13 @@
+(load "/Volumes/docondev/dev/scheme/SICO-Study-Group/chapter_two/deriv.ss")
+
+(define (exponentiation? expr)
+  (and (pair? expr) (eq? '** (car expr))))
+
+(define (base expr) (cadr expr))
+
+(define (exponent expr) (caddr expr))
+
+(define (make-exponentiation base expo)
+  (cond ((=number? expo 0) 1)
+        ((=number? expo 1) base)
+        (else (list '** base expo))))
