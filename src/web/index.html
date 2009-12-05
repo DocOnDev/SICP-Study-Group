@@ -1,0 +1,240 @@
+<!doctype html> 
+<html lang="en"> 
+<head> 
+<title>TW Recruiting Availability</title>
+<script type="text/javascript" src="http://AvailabilityDev01.getangular.com/angular-1.0a.js#database=AvailabilityDev01"></script>
+<script type="text/javascript">
+days = [ "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
+hours = [
+  {value:08, label:"08:00 - 09:00 am"},
+  {value:09, label:"09:00 - 10:00 am"},
+  {value:10, label:"10:00 - 11:00 am"},
+  {value:11, label:"11:00 - 12:00 am"},
+  {value:12, label:"12:00 - 01:00 pm"},
+  {value:13, label:"01:00 - 02:00 pm"},
+  {value:14, label:"02:00 - 03:00 pm"},
+  {value:15, label:"03:00 - 04:00 pm"},
+  {value:16, label:"04:00 - 05:00 pm"},
+  {value:17, label:"05:00 - 06:00 pm"},
+  {value:18, label:"06:00 - 07:00 pm"},
+  {value:19, label:"07:00 - 08:00 pm"},
+  {value:20, label:"08:00 - 09:00 pm"}
+];
+offices = [
+  {value:"HOM", name:"My Home"},
+  {value:"CLS", name:"My Client Site"},
+  {value:"BGL", name:"Bangalore"},
+  {value:"BEI", name:"Beijing"},
+  {value:"CLG", name:"Calgary"},
+  {value:"CHN", name:"Chennai"},
+  {value:"CHI", name:"Chicago"},
+  {value:"DAL", name:"Dallas"},
+  {value:"NYC", name:"New York"},
+  {value:"LON", name:"London"},
+  {value:"MAN", name:"Manchester"},
+  {value:"MLB", name:"Melbourne"},
+  {value:"PUN", name:"Pune"},
+  {value:"SFO", name:"San Francisco"},
+  {value:"STK", name:"Stockholm"},
+  {value:"SYD", name:"Sydney"},
+];
+function makeWeekKey(user, ww) {
+	return user + "-" + ww;
+}
+function selectAll(day, val) {
+	_.each(day, function($, hr){day[hr]=val;});
+}
+</script>
+<style type="text/css">
+	@import url(avbapp.css);
+</style>
+</head> 
+<body>
+<h1 class="title"> Recruiting Availability </h1>
+<div ng-init="$anchor.ww = $anchor.ww || 1; twer = Twer.loadOrCreate('mlong')"
+     ng-entity="Week:{days:[{hour:{}},{hour:{}},{hour:{}},{hour:{}},{hour:{}},{hour:{}},{hour:{}}]}; twer=Twer"
+     ng-auth="eager"
+     ng-watch="$anchor.ww:{week = Week.loadOrCreate($window.makeWeekKey($users.current.email, $anchor.ww));}; 
+               $users.current.email:{week = Week.loadOrCreate($window.makeWeekKey($users.current.email, $anchor.ww));}"
+     ng-eval="week.ww = $anchor.ww">
+<table id="nav">
+	<tr>
+		<td>
+			<span class="thisWeek"><input type=button ng-action="$anchor.ww = $anchor.ww - 1" value="Prev"/></span>
+            <span>CURRENT-DATE-TODO{{week.starting}}</span> <input type=button ng-action="$anchor.ww = 1 + 1*$anchor.ww" value="Next"/>
+		</td>
+		<td>
+			<label>This week I will be in or near the <select name="wLocation">
+				<option value="">--Select--</option>
+    		<option ng-repeat="city in $window.offices" value="{{city.value}}">{{city.name}}</option>
+			</select> office.
+			</label>
+		</td>
+		<td>
+			<a href="javascript:void(0);">Autofill from previous week</a>
+		</td>
+		<td>
+			<input type="submit" value="Save"/>
+		</td>
+	</tr>
+</table>
+<table id="week">
+    <input type="hidden" value="mlong" name="week.twer">
+	<tr class="days">
+		<td ng-repeat="day in $window.days">{{day}}</td>
+	</tr>
+	<tr class="options">
+		<td ng-repeat="day in week.days">
+			<select name="wLocation">
+        <option value="">--Select Office--</option>
+        <option ng-repeat="city in $window.offices" value="{{city.value}}">{{city.name}}</option>
+      </select>
+		</td>
+	</tr>
+	<tr >
+        <td height="50" colspan="7">
+            <strong>Out of office or not location/time specific...</strong>
+        </td>
+    </tr>
+    <tr>
+		<td ng-repeat="day in week.days"><label><input type="checkbox" value="true" name="day.codereview">Code Review</label></td>
+	</tr>
+    <tr>
+        <td height="50" colspan="7">
+            <strong>In an office or time sensitive interviews...</strong>
+        </td>
+    </tr>
+	<tr>
+		<td ng-repeat="day in week.days"><label><input type="checkbox" value="true" name="allday" ng-action="day.hour.$each({($,h):day.hour[h]=allday})">Any Time</label></td>
+	</tr>
+	<tr ng-repeat="hour in $window.hours">
+		<td ng-repeat="day in week.days"><label><input type="checkbox" value="true" name="day.hour[hour.value]">{{hour.label}}</label></td>
+	</tr>
+</table>
+<hr/>
+<table id="about_me">
+	<tr>
+        <th>
+            <span><strong>I can help with</strong></span>
+        </th>
+        <th>
+            <span><strong>Languages I know<br/>to some degree</strong></span>
+        </th>
+        <th>
+            <span><strong>Timezone</strong></span>
+        </th>
+        <th>
+            <span><strong>Roles that I can<br/>Interview for</strong></span>
+        </th>
+        <th>
+            <span><strong>Max number of<br/>interviews a week</strong></span>
+        </th>
+        <th>
+            <span><strong>How to book me<br/>for an interview</strong></span>
+        </th>
+    </tr>
+	<tr>
+        <td valign="top">
+            <label><input type="checkbox" value="true" name="twer.cando.anything">Anything</label>
+            <label><input type="checkbox" value="true" name="twer.cando.phone">Phone Interviews</label>
+            <label><input type="checkbox" value="true" name="twer.cando.interview">In-Person Interviews</label>
+            <label><input type="checkbox" value="true" name="twer.cando.review">Code Reviews</label>
+        </td>
+		<td valign="top">
+            <select name="twer.languages" multiple size="6">
+                <option value="java">Java</option>
+                <option value="ruby">Ruby</option>
+                <option value="csharp">C#</option>
+                <option value="javascript">Javascript</option>
+                <option value="python">Python</option>
+                <option value="cpp">C++</option>
+                <option value="scala">Scala</option>
+                <option value="clojure">Clojure</option>
+                <option value="fsharp">F#</option>
+                <option value="haskall">Haskall</option>
+                <option value="ioke">Ioke</option>
+            </select>
+        </td>
+        <td valign="top">
+            <select name="twer.timezone">
+                <option value="-8">US Pacific</option>
+                <option value="-6">US Central</option>
+                <option value="-5">US Eastern</option>
+                <option value="0">UK/Ireland</option>
+                <option value="+1">Central European</option>
+                <option value="+5.5">India</option>
+                <option value="+10">Australia</option>
+            </select>
+        </td>
+        <td valign="top">
+            <select name="twer.roles" multiple size="7">
+                <option value="UX">User Experience</option>
+                <option value="Dev">Developer</option>
+                <option value="PM">Project Manager</option>
+                <option value="CP">Client Principal</option>
+                <option value="BD">Business Developer</option>
+                <option value="IM">Iteration Manager</option>
+                <option value="BA">Business Analyst</option>
+            </select>
+        </td>
+        <td valign="top">
+            <span>Phone interviews</span>
+            <select name="twer.limits.phone">
+                <option value="0">0</option>
+                <option value="1">1</option>
+                <option value="2">2</option>
+                <option value="3">3</option>
+                <option value="4">4</option>
+                <option value="5">5</option>
+                <option value="6">6</option>
+            </select>
+            <br/>
+            <span>Office interviews</span>
+            <select name="twer.limits.office">
+                <option value="0">0</option>
+                <option value="1">1</option>
+                <option value="2">2</option>
+                <option value="3">3</option>
+                <option value="4">4</option>
+                <option value="5">5</option>
+                <option value="6">6</option>
+            </select>
+            <br/>
+            <span>Code reviews</span>
+            <select name="twer.limits.office">
+                <option value="1">0</option>
+                <option value="1">1</option>
+                <option value="2">2</option>
+                <option value="3">3</option>
+                <option value="4">4</option>
+                <option value="5">5</option>
+                <option value="6">6</option>
+            </select>
+        </td>
+        <td valign="top">
+            <select name="twer.contact" multiple size="4">
+                <option value="email">email</option>
+                <option value="gchat">Gmail Chat</option>
+                <option value="ym">Yahoo Messenger</option>
+                <option value="cell">Cell Phone</option>
+            </select>
+        </td>
+	</tr>
+</table>
+</div>
+<hr />
+<table>
+    <tr>
+        <td valign="top">
+            <pre>user = {{$users.current.email}}</pre>
+        </td>
+        <td valign="top">
+            <pre>twer = {{twer}}</pre>
+        </td>
+        <td valign="top">
+            <pre>week = {{week}}</pre>
+        </td>
+    </tr>
+</table>
+</body>
+</html>
